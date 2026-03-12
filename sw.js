@@ -1,4 +1,4 @@
-const CACHE = 'ikigai-v1';
+const CACHE = 'ikigai-v2';
 const ASSETS = [
   './',
   './index.html',
