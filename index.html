@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="Ikigai"/>
+<meta name="theme-color" content="#0a0a0a"/>
+<link rel="manifest" href="manifest.json"/>
+<link rel="apple-touch-icon" href="icons/icon-192.png"/>
+<title>Ikigai Vat</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --bg: #0a0a0a;
+  --bg2: #111111;
+  --bg3: #181818;
+  --bg4: #222222;
+  --border: rgba(255,255,255,0.08);
+  --border2: rgba(255,255,255,0.15);
+  --text: #f0ede8;
+  --text2: #8a8680;
+  --text3: #4a4845;
+
+  --teal: #3ecf8e;
+  --teal-dim: #1a4a35;
+  --teal-bg: #0d2420;
+  --amber: #f5a623;
+  --amber-dim: #5a3d0a;
+  --amber-bg: #2a1a05;
+  --purple: #9b8afb;
+  --purple-dim: #3d2f7a;
+  --purple-bg: #1a1230;
+  --coral: #f87171;
+  --coral-dim: #6b2020;
+  --coral-bg: #280f0f;
+  --pink: #f472b6;
+  --pink-dim: #6b1f4a;
+  --pink-bg: #280d1e;
+  --gold: #fbbf24;
+  --gold-dim: #6b4a08;
+  --gold-bg: #2a1c05;
+
+  --font-serif: 'DM Serif Display', Georgia, serif;
+  --font-mono: 'DM Mono', monospace;
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+html, body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-mono);
+  min-height: 100dvh;
+  overscroll-behavior: none;
+}
+
+/* ── TOP NAV ── */
+.nav {
+  position: sticky; top: 0; z-index: 50;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  padding: calc(var(--safe-top) + 10px) 16px 10px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.nav-title {
+  font-family: var(--font-serif);
+  font-size: 20px;
+  letter-spacing: -0.02em;
+  color: var(--text);
+}
+.nav-title span { color: var(--teal); font-style: italic; }
+.nav-stats {
+  font-size: 11px;
+  color: var(--text3);
+  display: flex; gap: 10px;
+}
+.nav-stats b { color: var(--text2); font-weight: 500; }
+
+/* ── MAIN SCROLL ── */
+.scroll-body {
+  padding: 16px 12px calc(var(--safe-bottom) + 80px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+}
+
+/* ── VAT PIPE SYSTEM ── */
+.vat-wrapper {
+  width: 100%;
+  max-width: 480px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+.vat-section {
+  width: 88%;
+  border: 1px solid var(--teal-dim);
+  background: var(--teal-bg);
+  padding: 12px;
+  position: relative;
+}
+.vat-section.top { border-radius: 12px 12px 0 0; }
+.vat-section.middle {
+  border-top: 1px dashed var(--teal-dim);
+  border-radius: 0;
+}
+.vat-section.bottom-vessel {
+  border-radius: 0 0 50% 50% / 0 0 24px 24px;
+  border-top: 1px dashed var(--teal-dim);
+  padding-bottom: 18px;
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+}
+.section-label {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--teal);
+  margin-bottom: 8px;
+  opacity: 0.7;
+}
+.section-sublabel {
+  font-size: 10px;
+  color: var(--text3);
+  margin-top: -4px;
+  margin-bottom: 8px;
+}
+
+/* ── PIPE CONNECTORS ── */
+.pipe {
+  width: 36%;
+  height: 18px;
+  border-left: 1px solid var(--teal-dim);
+  border-right: 1px solid var(--teal-dim);
+  background: var(--teal-bg);
+}
+
+/* ── LEAK ROW ── */
+.leak-row {
+  width: 88%;
+  display: flex;
+  align-items: center;
+  height: 32px;
+}
+.leak-line {
+  flex: 1;
+  height: 1px;
+  background: var(--border2);
+  position: relative;
+}
+.leak-line::after {
+  content: '▶';
+  position: absolute;
+  right: -6px; top: -7px;
+  font-size: 10px;
+  color: var(--border2);
+}
+.leak-line.left::after {
+  right: auto; left: -6px;
+  content: '◀';
+}
+.leak-label {
+  font-size: 9px;
+  color: var(--text3);
+  letter-spacing: .06em;
+  padding: 0 8px;
+  white-space: nowrap;
+}
+.pipe-mid {
+  width: 36%;
+  background: var(--teal-bg);
+  border-left: 1px solid var(--teal-dim);
+  border-right: 1px solid var(--teal-dim);
+  height: 32px;
+  flex-shrink: 0;
+}
+.spacer-arm { flex: 1; }
+
+/* ── DRIP + GOLD POT ── */
+.drip { width: 2px; height: 24px; background: var(--teal-dim); }
+.gold-pot-wrap {
+  display: flex; flex-direction: column; align-items: center; gap: 0;
+  margin-top: 4px;
+}
+.pot-rim {
+  width: 72px; height: 10px;
+  background: var(--gold-bg);
+  border: 1px solid var(--gold-dim);
+  border-radius: 4px 4px 0 0;
+}
+.pot-body {
+  width: 60px; height: 52px;
+  background: var(--gold-bg);
+  border: 1px solid var(--gold-dim);
+  border-radius: 0 0 14px 14px;
+  display: flex; align-items: center; justify-content: center;
+  flex-direction: column; gap: 2px;
+}
+.pot-star { font-size: 20px; line-height: 1; }
+.pot-count {
+  font-size: 10px; color: var(--gold); font-weight: 500;
+}
+.pot-label {
+  font-size: 10px; color: var(--gold-dim);
+  text-align: center; margin-top: 6px;
+  letter-spacing: .06em; text-transform: uppercase;
+}
+
+/* ── BUCKETS ROW ── */
+.buckets-row {
+  width: 100%;
+  max-width: 480px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 24px;
+  padding: 0 4px;
+}
+.bucket-card {
+  flex: 1;
+  min-width: calc(50% - 4px);
+  max-width: calc(50% - 4px);
+  border-radius: 10px;
+  padding: 10px 10px 12px;
+  display: flex; flex-direction: column; gap: 6px;
+}
+.bucket-card.trash-can { min-width: 100%; max-width: 100%; flex-direction: row; align-items: flex-start; gap: 12px; }
+.bucket-card.trash-can .bucket-chips { flex-direction: row; flex-wrap: wrap; }
+.bucket-title {
+  font-size: 10px; font-weight: 500;
+  letter-spacing: .1em; text-transform: uppercase;
+}
+.bucket-sub { font-size: 10px; opacity: 0.6; margin-top: -2px; }
+.bucket-chips { display: flex; flex-wrap: wrap; gap: 4px; min-height: 20px; }
+
+.bc-gray { background: #111; border: 1px solid #2a2a2a; }
+.bc-gray .bucket-title { color: var(--text2); }
+.bc-amber { background: var(--amber-bg); border: 1px solid var(--amber-dim); }
+.bc-amber .bucket-title { color: var(--amber); }
+.bc-purple { background: var(--purple-bg); border: 1px solid var(--purple-dim); }
+.bc-purple .bucket-title { color: var(--purple); }
+.bc-pink { background: var(--pink-bg); border: 1px solid var(--pink-dim); }
+.bc-pink .bucket-title { color: var(--pink); }
+.bc-coral { background: var(--coral-bg); border: 1px solid var(--coral-dim); }
+.bc-coral .bucket-title { color: var(--coral); }
+
+/* ── CHIPS ── */
+.chip {
+  display: inline-flex; align-items: center;
+  padding: 4px 9px; border-radius: 20px;
+  font-size: 12px; font-family: var(--font-mono);
+  cursor: pointer; border: 1px solid transparent;
+  transition: opacity .15s, transform .1s;
+  max-width: 150px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap;
+  user-select: none;
+}
+.chip:active { transform: scale(0.95); }
+
+.chip-teal { background: var(--teal-bg); color: var(--teal); border-color: var(--teal-dim); }
+.chip-amber { background: var(--amber-bg); color: var(--amber); border-color: var(--amber-dim); }
+.chip-purple { background: var(--purple-bg); color: var(--purple); border-color: var(--purple-dim); }
+.chip-gold { background: var(--gold-bg); color: var(--gold); border-color: var(--gold-dim); }
+.chip-gray { background: #1a1a1a; color: var(--text2); border-color: #333; }
+.chip-pink { background: var(--pink-bg); color: var(--pink); border-color: var(--pink-dim); }
+.chip-coral { background: var(--coral-bg); color: var(--coral); border-color: var(--coral-dim); }
+
+/* small chips inside buckets */
+.chip-sm {
+  padding: 2px 7px; font-size: 11px;
+  border-radius: 4px;
+}
+
+/* ── ADD BAR ── */
+.add-bar {
+  display: flex; gap: 8px; margin-bottom: 10px;
+}
+.add-bar input {
+  flex: 1;
+  background: var(--bg3);
+  border: 1px solid var(--border2);
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 13px;
+  font-family: var(--font-mono);
+  color: var(--text);
+  outline: none;
+}
+.add-bar input::placeholder { color: var(--text3); }
+.add-bar input:focus { border-color: var(--teal-dim); }
+.add-bar button {
+  padding: 8px 14px;
+  background: var(--teal-dim);
+  border: 1px solid var(--teal);
+  border-radius: 8px;
+  color: var(--teal);
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  font-family: var(--font-mono);
+  transition: background .15s;
+}
+.add-bar button:active { background: var(--teal); color: var(--teal-bg); }
+
+/* ── EMPTY STATE ── */
+.empty { font-size: 11px; color: var(--text3); font-style: italic; padding: 4px 0; }
+
+/* ── BOTTOM FAB ── */
+.fab-hint {
+  position: fixed;
+  bottom: calc(var(--safe-bottom) + 12px);
+  left: 50%; transform: translateX(-50%);
+  font-size: 10px; color: var(--text3);
+  letter-spacing: .06em;
+  pointer-events: none;
+}
+
+/* ── MODAL ── */
+.modal-scrim {
+  display: none;
+  position: fixed; inset: 0; z-index: 200;
+  background: rgba(0,0,0,.7);
+  backdrop-filter: blur(4px);
+  align-items: flex-end;
+  justify-content: center;
+  padding: 0 0 calc(var(--safe-bottom) + 0px);
+}
+.modal-scrim.open { display: flex; }
+.modal-sheet {
+  background: var(--bg2);
+  border: 1px solid var(--border2);
+  border-radius: 20px 20px 0 0;
+  width: 100%; max-width: 480px;
+  padding: 20px 20px calc(var(--safe-bottom) + 20px);
+  animation: slideup .22s ease-out;
+}
+@keyframes slideup {
+  from { transform: translateY(40px); opacity: 0; }
+  to   { transform: translateY(0); opacity: 1; }
+}
+.modal-handle {
+  width: 36px; height: 4px;
+  background: var(--border2); border-radius: 2px;
+  margin: 0 auto 16px;
+}
+.modal-name {
+  font-family: var(--font-serif);
+  font-size: 22px;
+  margin-bottom: 4px;
+  letter-spacing: -0.01em;
+}
+.modal-zone {
+  font-size: 11px; color: var(--text3);
+  letter-spacing: .08em; text-transform: uppercase;
+  margin-bottom: 20px;
+}
+.modal-actions { display: flex; flex-direction: column; gap: 8px; }
+.mact {
+  display: flex; align-items: center;
+  padding: 13px 16px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--bg3);
+  cursor: pointer;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--text);
+  text-align: left;
+  transition: background .15s;
+  gap: 12px;
+}
+.mact:active { background: var(--bg4); }
+.mact-dot {
+  width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+}
+.mact.promote { border-color: var(--teal-dim); color: var(--teal); background: var(--teal-bg); }
+.mact.danger  { border-color: var(--coral-dim); color: var(--coral); background: var(--coral-bg); }
+.mact-cancel {
+  text-align: center; padding: 14px;
+  font-size: 13px; color: var(--text3);
+  cursor: pointer; margin-top: 4px;
+  font-family: var(--font-mono);
+}
+
+/* ── INSTALL BANNER ── */
+.install-banner {
+  display: none;
+  position: fixed; bottom: calc(var(--safe-bottom) + 16px); left: 50%;
+  transform: translateX(-50%);
+  background: var(--bg3); border: 1px solid var(--teal-dim);
+  border-radius: 12px; padding: 12px 16px;
+  width: calc(100% - 32px); max-width: 440px;
+  z-index: 100;
+  display: none; gap: 12px; align-items: center;
+}
+.install-banner.show { display: flex; }
+.install-banner p { flex: 1; font-size: 12px; color: var(--text2); line-height: 1.4; }
+.install-banner p span { color: var(--teal); }
+.install-btn {
+  padding: 8px 14px; background: var(--teal-dim);
+  border: 1px solid var(--teal); border-radius: 8px;
+  color: var(--teal); font-size: 12px; cursor: pointer;
+  font-family: var(--font-mono); white-space: nowrap;
+}
+.install-close {
+  color: var(--text3); font-size: 18px; cursor: pointer; line-height: 1;
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-title">ikigai <span>vat</span></div>
+  <div class="nav-stats" id="nav-stats"></div>
+</nav>
+
+<div class="scroll-body">
+<div class="vat-wrapper">
+
+  <!-- TOP: INBOX -->
+  <div class="vat-section top">
+    <div class="section-label">Pour in activities</div>
+    <div class="add-bar">
+      <input type="text" id="newact" placeholder="e.g. oil painting, chess, surfing…" autocomplete="off"/>
+      <button onclick="doAdd()">+</button>
+    </div>
+    <div id="zone-inbox" class="bucket-chips"><span class="empty">Nothing yet — add something above</span></div>
+  </div>
+
+  <!-- LEAK 1: not curious -->
+  <div class="leak-row">
+    <div class="leak-line left"></div>
+    <div class="leak-label" style="color:var(--text3)">not curious</div>
+    <div class="pipe-mid"></div>
+    <div class="spacer-arm"></div>
+  </div>
+
+  <!-- TRYING -->
+  <div class="vat-section middle">
+    <div class="section-label">Trying</div>
+    <div class="section-sublabel">A few sessions — does it pull you back?</div>
+    <div id="zone-trying" class="bucket-chips"><span class="empty">—</span></div>
+  </div>
+
+  <!-- LEAK 2: just a curiosity -->
+  <div class="leak-row">
+    <div class="leak-line left"></div>
+    <div class="leak-label" style="color:var(--text3)">just a curiosity</div>
+    <div class="pipe-mid"></div>
+    <div class="spacer-arm"></div>
+  </div>
+
+  <!-- PLAY -->
+  <div class="vat-section middle">
+    <div class="section-label">Play zone</div>
+    <div class="section-sublabel">Enjoyable, not draining — you naturally return</div>
+    <div id="zone-play" class="bucket-chips"><span class="empty">—</span></div>
+  </div>
+
+  <!-- LEAK 3: fun hobby -->
+  <div class="leak-row">
+    <div class="leak-line left"></div>
+    <div class="leak-label" style="color:var(--text3)">fun hobby only</div>
+    <div class="pipe-mid"></div>
+    <div class="spacer-arm"></div>
+  </div>
+
+  <!-- CRAFT -->
+  <div class="vat-section middle">
+    <div class="section-label">Craft — 6 to 12 months</div>
+    <div class="section-sublabel">Serious time &amp; deliberate effort</div>
+    <div id="zone-craft" class="bucket-chips"><span class="empty">—</span></div>
+  </div>
+
+  <!-- LEAK 4: non-economic game -->
+  <div class="leak-row">
+    <div class="spacer-arm"></div>
+    <div class="pipe-mid"></div>
+    <div class="leak-label" style="color:var(--text3)">no market fit</div>
+    <div class="leak-line"></div>
+  </div>
+
+  <!-- BOTTOM VESSEL: MONEY GAME -->
+  <div class="vat-section bottom-vessel">
+    <div class="section-label">Distilled</div>
+    <div id="zone-money" class="bucket-chips" style="justify-content:center;min-height:24px"><span class="empty">—</span></div>
+  </div>
+
+  <div class="drip"></div>
+
+  <!-- GOLD POT -->
+  <div class="gold-pot-wrap">
+    <div class="pot-rim"></div>
+    <div class="pot-body">
+      <div class="pot-star">★</div>
+      <div class="pot-count" id="pot-count"></div>
+    </div>
+    <div class="pot-label">Money game · 2–3 yr bet</div>
+  </div>
+
+</div><!-- /vat-wrapper -->
+
+<!-- BUCKETS -->
+<div class="buckets-row">
+
+  <div class="bucket-card bc-gray">
+    <div>
+      <div class="bucket-title">Not curious</div>
+      <div class="bucket-sub">Filtered out at top</div>
+    </div>
+    <div class="bucket-chips" id="bc-notcurious"><span class="empty">—</span></div>
+  </div>
+
+  <div class="bucket-card bc-amber">
+    <div>
+      <div class="bucket-title">Playful curiosity</div>
+      <div class="bucket-sub">Tried, no natural pull</div>
+    </div>
+    <div class="bucket-chips" id="bc-curiosity"><span class="empty">—</span></div>
+  </div>
+
+  <div class="bucket-card bc-pink">
+    <div>
+      <div class="bucket-title">Fun hobby</div>
+      <div class="bucket-sub">Play, no craft ambition</div>
+    </div>
+    <div class="bucket-chips" id="bc-hobby"><span class="empty">—</span></div>
+  </div>
+
+  <div class="bucket-card bc-coral">
+    <div>
+      <div class="bucket-title">Non-economic game</div>
+      <div class="bucket-sub">Fame, thrill, validation…</div>
+    </div>
+    <div class="bucket-chips" id="bc-noneco"><span class="empty">—</span></div>
+  </div>
+
+  <div class="bucket-card bc-purple" style="min-width:100%;max-width:100%">
+    <div>
+      <div class="bucket-title">Stays in craft</div>
+      <div class="bucket-sub">Good at it — no market, keeping it going</div>
+    </div>
+    <div class="bucket-chips" id="bc-craft-stay"></div>
+  </div>
+
+</div>
+
+</div><!-- /scroll-body -->
+
+<!-- MODAL -->
+<div class="modal-scrim" id="modal-scrim" onclick="handleScrimClick(event)">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-name" id="modal-name"></div>
+    <div class="modal-zone" id="modal-zone"></div>
+    <div class="modal-actions" id="modal-actions"></div>
+    <div class="mact-cancel" onclick="closeModal()">cancel</div>
+  </div>
+</div>
+
+<!-- INSTALL BANNER -->
+<div class="install-banner" id="install-banner">
+  <p>Add to your home screen for the full app experience <span>↓</span></p>
+  <div class="install-btn" id="install-btn" onclick="doInstall()">Install</div>
+  <div class="install-close" onclick="dismissInstall()">×</div>
+</div>
+
+<script>
+// ── DATA ──
+let acts = [];
+try { acts = JSON.parse(localStorage.getItem('ikigai_v3') || '[]'); } catch(e) {}
+let activeId = null;
+let deferredPrompt = null;
+
+function save() {
+  try { localStorage.setItem('ikigai_v3', JSON.stringify(acts)); } catch(e) {}
+}
+
+function esc(s) {
+  return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// ── ZONE CONFIG ──
+const VAT_ZONES = ['inbox','trying','play','craft','money'];
+
+const CHIP_CLASS = {
+  inbox: 'chip-teal', trying: 'chip-amber', play: 'chip-teal',
+  craft: 'chip-purple', money: 'chip-gold',
+  notcurious: 'chip-gray', curiosity: 'chip-amber', hobby: 'chip-pink',
+  noneco: 'chip-coral', 'craft-stay': 'chip-purple'
+};
+
+const ZONE_LABELS = {
+  inbox: 'inbox', trying: 'trying', play: 'play zone',
+  craft: 'craft', money: 'money game',
+  notcurious: 'not curious', curiosity: 'playful curiosity',
+  hobby: 'fun hobby', noneco: 'non-economic game', 'craft-stay': 'stays in craft'
+};
+
+const ACTIONS = {
+  inbox: [
+    { label: 'Start trying it', zone: 'trying', cls: 'promote', dot: '#3ecf8e' },
+    { label: 'Not curious — filter out', zone: 'notcurious', cls: 'danger', dot: '#4a4845' },
+  ],
+  trying: [
+    { label: 'It\'s play — I keep coming back', zone: 'play', cls: 'promote', dot: '#3ecf8e' },
+    { label: 'Just a curiosity, no natural pull', zone: 'curiosity', cls: '', dot: '#f5a623' },
+    { label: 'Back to inbox', zone: 'inbox', cls: '', dot: '#4a4845' },
+  ],
+  play: [
+    { label: 'Get serious — move to craft', zone: 'craft', cls: 'promote', dot: '#9b8afb' },
+    { label: 'Keep it as a fun hobby', zone: 'hobby', cls: '', dot: '#f472b6' },
+  ],
+  craft: [
+    { label: 'Market demand + leverage — money game!', zone: 'money', cls: 'promote', dot: '#fbbf24' },
+    { label: 'No market — chase non-economic game', zone: 'noneco', cls: '', dot: '#f87171' },
+    { label: 'Good at it — just staying in craft', zone: 'craft-stay', cls: '', dot: '#9b8afb' },
+  ],
+  notcurious: [
+    { label: 'Restore to inbox', zone: 'inbox', cls: '', dot: '#3ecf8e' },
+  ],
+  curiosity: [
+    { label: 'Try again', zone: 'trying', cls: 'promote', dot: '#f5a623' },
+    { label: 'Move to inbox', zone: 'inbox', cls: '', dot: '#4a4845' },
+  ],
+  hobby: [
+    { label: 'Actually want to get serious', zone: 'craft', cls: 'promote', dot: '#9b8afb' },
+    { label: 'Back to play', zone: 'play', cls: '', dot: '#3ecf8e' },
+  ],
+  noneco: [
+    { label: 'Back to craft', zone: 'craft', cls: '', dot: '#9b8afb' },
+  ],
+  'craft-stay': [
+    { label: 'Market opened up — money game!', zone: 'money', cls: 'promote', dot: '#fbbf24' },
+    { label: 'Back to craft', zone: 'craft', cls: '', dot: '#9b8afb' },
+  ],
+  money: [
+    { label: 'Back to craft', zone: 'craft', cls: '', dot: '#9b8afb' },
+  ],
+};
+
+// ── ADD ──
+function doAdd() {
+  const inp = document.getElementById('newact');
+  const name = (inp.value || '').trim();
+  if (!name) return;
+  acts.push({ id: Date.now(), name, zone: 'inbox', movedAt: Date.now() });
+  inp.value = '';
+  save(); render();
+  inp.focus();
+}
+
+document.getElementById('newact').addEventListener('keydown', e => {
+  if (e.key === 'Enter') doAdd();
+});
+
+// ── MODAL ──
+function openModal(id) {
+  const a = acts.find(x => x.id === id);
+  if (!a) return;
+  activeId = id;
+  document.getElementById('modal-name').textContent = a.name;
+  document.getElementById('modal-zone').textContent = '← ' + (ZONE_LABELS[a.zone] || a.zone);
+  const actions = ACTIONS[a.zone] || [];
+  const cont = document.getElementById('modal-actions');
+  cont.innerHTML = actions.map(ac => `
+    <div class="mact ${ac.cls||''}" onclick="doMove(${id},'${ac.zone}')">
+      <div class="mact-dot" style="background:${ac.dot}"></div>
+      ${esc(ac.label)}
+    </div>
+  `).join('');
+  document.getElementById('modal-scrim').classList.add('open');
+}
+
+function closeModal() {
+  document.getElementById('modal-scrim').classList.remove('open');
+  activeId = null;
+}
+
+function handleScrimClick(e) {
+  if (e.target === document.getElementById('modal-scrim')) closeModal();
+}
+
+function doMove(id, zone) {
+  const a = acts.find(x => x.id === id);
+  if (a) { a.zone = zone; a.movedAt = Date.now(); save(); render(); }
+  closeModal();
+}
+
+// ── RENDER ──
+function render() {
+  const groups = {};
+  [...VAT_ZONES, 'notcurious','curiosity','hobby','noneco','craft-stay'].forEach(z => groups[z] = []);
+  acts.forEach(a => { if (groups[a.zone] !== undefined) groups[a.zone].push(a); });
+
+  // vat zones
+  VAT_ZONES.forEach(z => {
+    const el = document.getElementById('zone-' + z);
+    if (!el) return;
+    const cc = CHIP_CLASS[z];
+    if (groups[z].length === 0) {
+      el.innerHTML = '<span class="empty">—</span>';
+    } else {
+      el.innerHTML = groups[z].map(a =>
+        `<div class="chip ${cc}" onclick="openModal(${a.id})" title="${esc(a.name)}">${esc(a.name)}</div>`
+      ).join('');
+    }
+  });
+
+  // buckets
+  const bucketMap = {notcurious:'bc-notcurious', curiosity:'bc-curiosity', hobby:'bc-hobby', noneco:'bc-noneco', 'craft-stay':'bc-craft-stay'};
+  Object.entries(bucketMap).forEach(([zone, elId]) => {
+    const el = document.getElementById(elId);
+    if (!el) return;
+    const cc = CHIP_CLASS[zone];
+    if (groups[zone].length === 0) {
+      el.innerHTML = '<span class="empty">—</span>';
+    } else {
+      el.innerHTML = groups[zone].map(a =>
+        `<div class="chip chip-sm ${cc}" onclick="openModal(${a.id})" title="${esc(a.name)}">${esc(a.name)}</div>`
+      ).join('');
+    }
+  });
+
+  // pot count
+  const moneyCount = groups['money'].length;
+  document.getElementById('pot-count').textContent = moneyCount > 0 ? moneyCount : '';
+
+  // nav stats
+  const total = acts.length;
+  const active = groups['inbox'].length + groups['trying'].length + groups['play'].length + groups['craft'].length;
+  document.getElementById('nav-stats').innerHTML =
+    `<span>${total} total</span><span><b>${active}</b> active</span>`;
+}
+
+// ── PWA INSTALL ──
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  deferredPrompt = e;
+  const dismissed = localStorage.getItem('ikigai_install_dismissed');
+  if (!dismissed) {
+    document.getElementById('install-banner').classList.add('show');
+  }
+});
+
+function doInstall() {
+  if (!deferredPrompt) return;
+  deferredPrompt.prompt();
+  deferredPrompt.userChoice.then(() => {
+    deferredPrompt = null;
+    dismissInstall();
+  });
+}
+
+function dismissInstall() {
+  document.getElementById('install-banner').classList.remove('show');
+  localStorage.setItem('ikigai_install_dismissed', '1');
+}
+
+window.addEventListener('appinstalled', () => {
+  document.getElementById('install-banner').classList.remove('show');
+});
+
+// ── INIT ──
+render();
+
+// Register service worker
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').catch(() => {});
+  });
+}
+</script>
+</body>
+</html>
